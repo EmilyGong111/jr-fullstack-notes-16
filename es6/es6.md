@@ -442,7 +442,7 @@ const calendar = {
     console.log(this.currentDay);
   },
 };
-calendar.nextDay();
+calendar.nextDay();//nextDay is a traditional function, this in traditional function refers to who called the function
 ```
 
 ```js
@@ -453,6 +453,35 @@ const calendar = {
       this.currentDay++;
       console.log(this.currentDay);
     }); // .bind(this)
+  },
+};
+calendar.nextDay();
+```
+//(callback function will be called by window when it is the time.This inside the setTimeOut function refers to window, there is no currentDay, so "this.currentDay" is undefined, undefined+1 is NaN. To avoid this trick, we can add .bind(this) like below:
+
+```js
+const calendar = {
+  currentDay: 6,
+  nextDay() {
+    setTimeout(function () {
+      this.currentDay++;
+      console.log(this.currentDay);
+    }.bind(this)); 
+  },
+};
+calendar.nextDay();//we use bind(this) point "this" in the callback function to nextDay's "this" 
+```
+//Another way to avoid the trick is avoiding the key word "this", as below:
+
+```js
+const calendar = {
+  currentDay: 6,
+  nextDay() {
+    const that = this;
+    setTimeout(function () {
+      that.currentDay++;
+      console.log(that.currentDay);
+    }); 
   },
 };
 calendar.nextDay();
@@ -505,7 +534,7 @@ const object = {
   },
 };
 
-console.log(object.getMessage()); // ??
+console.log(object.getMessage()); // getMessage as a traditional function, the 'this' inside it refers to the object who called it. "Hello,World!" 
 ```
 
 ```js
